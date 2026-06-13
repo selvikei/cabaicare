@@ -1,15 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:hama_cabai_detect/widgets/header_section.dart';
-import 'package:hama_cabai_detect/widgets/detection_banner.dart';
-import 'package:hama_cabai_detect/widgets/chili_card.dart';
-import 'package:hama_cabai_detect/widgets/pest_grid_section.dart';
-import 'package:hama_cabai_detect/widgets/history_item_card.dart';
-import 'package:hama_cabai_detect/screens/detector_screen.dart';
-import 'package:hama_cabai_detect/screens/history_list_screen.dart';
-import 'package:hama_cabai_detect/data/database_helper.dart';
-import 'package:hama_cabai_detect/models/history_mode.dart';
-import 'package:hama_cabai_detect/screens/camera_inference_screen.dart';
+import 'package:cabai_care/widgets/header_section.dart';
+import 'package:cabai_care/widgets/detection_banner.dart';
+import 'package:cabai_care/widgets/chili_card.dart';
+import 'package:cabai_care/widgets/pest_grid_section.dart';
+import 'package:cabai_care/widgets/history_item_card.dart';
+import 'package:cabai_care/screens/detector_screen.dart';
+import 'package:cabai_care/screens/history_list_screen.dart';
+import 'package:cabai_care/data/database_helper.dart';
+import 'package:cabai_care/models/history_mode.dart';
+import 'package:cabai_care/screens/camera_inference_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
