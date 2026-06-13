@@ -58,8 +58,8 @@ class CameraControls extends StatelessWidget {
                 onPressed: () => onSliderToggled(SliderType.confidence),
               ),
               SizedBox(height: isLandscape ? 8 : 12),
-              ControlButton.asset(
-                assetPath: 'assets/iou.png',
+              ControlButton.icon(
+                icon: Icons.tune,
                 onPressed: () => onSliderToggled(SliderType.iou),
               ),
               SizedBox(height: isLandscape ? 16 : 40),

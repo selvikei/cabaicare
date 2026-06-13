@@ -12,7 +12,7 @@ class TfliteService {
   Future<void> loadModel() async {
     try {
       _interpreter = await Interpreter.fromAsset(
-        'assets/models/yolo26n_int8.tflite',
+        'assets/models/yolov8n_train5.tflite',
       );
 
       final labelData = await rootBundle.loadString('assets/models/labels.txt');

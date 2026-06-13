@@ -14,7 +14,7 @@ class ChiliCard extends StatelessWidget {
         );
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(6),
         child: Stack(
           children: [
             Image.asset(

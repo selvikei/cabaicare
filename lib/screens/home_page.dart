@@ -44,8 +44,9 @@ class _HomePageState extends State<HomePage> {
           ),
 
           Positioned(
-            left: 210, right: 12, bottom: 36,
-            child:_buildRealTimeButton(context),
+            right: 16, // Jarak dari tepi kanan layar
+            bottom: 50, // Jarak dari tepi bawah layar
+            child: _buildRealTimeButton(context),
           ),
         ],
       ),

@@ -95,6 +95,42 @@ class _DetectorScreenState extends State<DetectorScreen> {
       setState(() => _isProcessing = false);
     }
   }
+  Future<void> pickFromGallery() async {
+    if (_isProcessing) return;
+    try {
+      // 1. Ambil file gambar dari galeri perangkat
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (pickedFile == null) return; // Pengguna membatalkan pilihan
+
+      setState(() => _isProcessing = true);
+
+      // 2. Potong gambar persegi agar sama presisinya seperti jepretan kamera
+      String processedPath = await _processAndCropImage(pickedFile.path);
+      
+      // 3. Jalankan inferensi model tflite pada hasil potongan
+      final results = await tfliteService.predict(processedPath);
+
+      if (!mounted) return;
+      setState(() => _isProcessing = false);
+
+      // 4. Buka halaman hasil deteksi hama
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(
+            imagePath: processedPath, 
+            detections: results,
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint("Gagal mengambil gambar dari galeri: $e");
+      setState(() => _isProcessing = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +237,7 @@ class _DetectorScreenState extends State<DetectorScreen> {
       children: [
         IconButton(
           icon: const Icon(Icons.photo_library, color: Colors.white, size: 30),
-          onPressed: () {}, // Tambahkan pick gallery kamu di sini
+          onPressed: pickFromGallery, // Tambahkan pick gallery kamu di sini
         ),
         GestureDetector(
           onTap: takePicture,
