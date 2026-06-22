@@ -8,7 +8,7 @@ class ChiliDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Informasi Komoditas"),
+        title: const Text("Komoditas Cabai"),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,

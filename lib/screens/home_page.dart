@@ -131,59 +131,8 @@ class _HomePageState extends State<HomePage> {
                 _buildHistoryHeader(),
                 const SizedBox(height: 15),
                 _buildHistoryPreview(), // Ambil 3 data terbaru
-                const SizedBox(height: 120), // Spasi agar tidak tertutup Navbar
+                // const SizedBox(height: 120), // Spasi agar tidak tertutup Navbar
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- LOGIKA NAVBAR GLASS ---
-  Widget _buildGlassNavbar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            height: 70,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2E5959).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _navbarItem(Icons.home_rounded, "Home", 0),
-                const SizedBox(width: 40), // Ruang Tombol Kamera
-                _navbarItem(Icons.history_rounded, "Riwayat", 2),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _navbarItem(IconData icon, String label, int index) {
-    bool isSelected = _currentIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? const Color(0xFF2E5959) : Colors.black38),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 11,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? const Color(0xFF2E5959) : Colors.black38,
             ),
           ),
         ],

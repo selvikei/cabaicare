@@ -69,7 +69,7 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Real-Time YOLO Inference"),
+        title: const Text("Real-Time YOLO Detection"),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,

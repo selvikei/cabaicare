@@ -23,7 +23,7 @@ class CameraInferenceController extends ChangeNotifier {
   String _selectedModel = _defaultModelForTask(YOLOTask.detect);
 
   double _currentZoomLevel = 1.0;
-  LensFacing _lensFacing = LensFacing.front;
+  LensFacing _lensFacing = LensFacing.back;
   bool _isFrontCamera = false;
 
   final _yoloController = YOLOViewController();
