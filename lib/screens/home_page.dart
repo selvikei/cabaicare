@@ -1,15 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:hama_cabai_detect/widgets/header_section.dart';
-import 'package:hama_cabai_detect/widgets/detection_banner.dart';
-import 'package:hama_cabai_detect/widgets/chili_card.dart';
-import 'package:hama_cabai_detect/widgets/pest_grid_section.dart';
-import 'package:hama_cabai_detect/widgets/history_item_card.dart';
-import 'package:hama_cabai_detect/screens/detector_screen.dart';
-import 'package:hama_cabai_detect/screens/history_list_screen.dart';
-import 'package:hama_cabai_detect/data/database_helper.dart';
-import 'package:hama_cabai_detect/models/history_mode.dart';
-import 'package:hama_cabai_detect/screens/camera_inference_screen.dart';
+import 'package:cabai_care/widgets/header_section.dart';
+import 'package:cabai_care/widgets/detection_banner.dart';
+import 'package:cabai_care/widgets/chili_card.dart';
+import 'package:cabai_care/widgets/pest_grid_section.dart';
+import 'package:cabai_care/widgets/history_item_card.dart';
+import 'package:cabai_care/screens/detector_screen.dart';
+import 'package:cabai_care/screens/history_list_screen.dart';
+import 'package:cabai_care/data/database_helper.dart';
+import 'package:cabai_care/models/history_mode.dart';
+import 'package:cabai_care/screens/camera_inference_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,8 +44,9 @@ class _HomePageState extends State<HomePage> {
           ),
 
           Positioned(
-            left: 210, right: 12, bottom: 36,
-            child:_buildRealTimeButton(context),
+            right: 16, // Jarak dari tepi kanan layar
+            bottom: 50, // Jarak dari tepi bawah layar
+            child: _buildRealTimeButton(context),
           ),
         ],
       ),
@@ -130,59 +131,8 @@ class _HomePageState extends State<HomePage> {
                 _buildHistoryHeader(),
                 const SizedBox(height: 15),
                 _buildHistoryPreview(), // Ambil 3 data terbaru
-                const SizedBox(height: 120), // Spasi agar tidak tertutup Navbar
+                // const SizedBox(height: 120), // Spasi agar tidak tertutup Navbar
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- LOGIKA NAVBAR GLASS ---
-  Widget _buildGlassNavbar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            height: 70,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2E5959).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _navbarItem(Icons.home_rounded, "Home", 0),
-                const SizedBox(width: 40), // Ruang Tombol Kamera
-                _navbarItem(Icons.history_rounded, "Riwayat", 2),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _navbarItem(IconData icon, String label, int index) {
-    bool isSelected = _currentIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? const Color(0xFF2E5959) : Colors.black38),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 11,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? const Color(0xFF2E5959) : Colors.black38,
             ),
           ),
         ],

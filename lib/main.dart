@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:hama_cabai_detect/screens/home_page.dart'; // Pastikan path ini benar
-import 'package:hama_cabai_detect/services/tflite_service.dart'; // Import TfliteService untuk digunakan di DetectorScreen
+import 'package:cabai_care/screens/home_page.dart'; // Pastikan path ini benar
+import 'package:cabai_care/services/tflite_service.dart'; // Import TfliteService untuk digunakan di DetectorScreen
 
 // 1. Variabel global untuk menampung daftar kamera HP
 List<CameraDescription> cameras = [];

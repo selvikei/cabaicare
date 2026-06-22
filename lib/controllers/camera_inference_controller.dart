@@ -23,7 +23,7 @@ class CameraInferenceController extends ChangeNotifier {
   String _selectedModel = _defaultModelForTask(YOLOTask.detect);
 
   double _currentZoomLevel = 1.0;
-  LensFacing _lensFacing = LensFacing.front;
+  LensFacing _lensFacing = LensFacing.back;
   bool _isFrontCamera = false;
 
   final _yoloController = YOLOViewController();
@@ -61,6 +61,8 @@ class CameraInferenceController extends ChangeNotifier {
       iouThreshold: _iouThreshold,
       numItemsThreshold: _numItemsThreshold,
     );
+    _selectedModel = "assets/models/yolov8n_train5.tflite"; 
+    notifyListeners();
   }
 
   void onDetectionResults(List<YOLOResult> results) {
@@ -74,6 +76,7 @@ class CameraInferenceController extends ChangeNotifier {
       _currentFps = _frameCount * 1000 / elapsed;
       _frameCount = 0;
       _lastFpsUpdate = now;
+      notifyListeners();
     }
 
     if (_detectionCount != results.length) {

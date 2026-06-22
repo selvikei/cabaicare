@@ -26,14 +26,32 @@ class CameraInferenceOverlay extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ModelSelector(
-            selectedTask: controller.selectedTask,
-            selectedModel: controller.selectedModel,
-            availableTasks: controller.availableTasks,
-            availableModels: controller.availableModels,
-            onTaskChanged: controller.changeTask,
-            onModelChanged: controller.changeModel,
+          
+          // ModelSelector(
+          //   selectedTask: controller.selectedTask,
+          //   selectedModel: controller.selectedModel,
+          //   availableTasks: controller.availableTasks,
+          //   availableModels: controller.availableModels,
+          //   onTaskChanged: controller.changeTask,
+          //   onModelChanged: controller.changeModel,
+          // ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'Model: YOLOv8n Train 5 (INT8)', // <-- Nama asli modelmu bersinar di sini!
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
           ),
+          
           SizedBox(height: isLandscape ? 8 : 12),
           DetectionStatsDisplay(
             detectionCount: controller.detectionCount,

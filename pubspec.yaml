@@ -1,4 +1,4 @@
-name: hama_cabai_detect
+name: cabai_care
 description: "A new Flutter project."
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -27,13 +27,32 @@ dependencies:
   google_fonts: ^8.1.0
   shared_preferences: ^2.5.5
   ultralytics_yolo: ^0.3.4
+  change_app_package_name: ^1.5.0
+
   flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/images/cabaicare.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#E9EFEF" # Warna hijau gelap khas CabaiCare sebagai background
+  image: "assets/images/cabaicare.png" # Logo CabaiCare di tengah layar
+  android_12:
+    color: "#E9EFEF" # Warna hijau gelap khas CabaiCare sebagai background untuk Android 12
+    image: "assets/images/cabaicare.png"
+
+  android: true
+  ios: false
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.0
+  flutter_native_splash: ^2.4.7
 
 
 flutter:
@@ -67,7 +86,7 @@ flutter:
           weight: 500
 
   assets:
-    - assets/models/yolo26n_int8.tflite
+    - assets/models/yolov8n_train5.tflite
     - assets/models/labels.txt
     - assets/images/
     - assets/icons/
