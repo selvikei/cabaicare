@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/about_screen.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -34,7 +35,20 @@ class HeaderSection extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.info_outline, size: 28,)
+          // const Icon(Icons.info_outline, size: 28,)
+          IconButton(
+            icon: const Icon(Icons.info_outline, size: 28),
+            color: const Color(0xFF2E5959), // Opsional: disamakan dengan tema hijau CabaiCare
+            onPressed: () {
+              // Navigasi langsung ke halaman Panduan Manual
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

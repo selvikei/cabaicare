@@ -6,6 +6,7 @@ import '../main.dart';
 import 'result_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import '../widgets/appbar_widget.dart';
 
 class DetectorScreen extends StatefulWidget {
   const DetectorScreen({super.key});
@@ -143,6 +144,10 @@ class _DetectorScreenState extends State<DetectorScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: const CustomAppBar(
+        title: "Kamera Deteksi Hama",
+      ),
+
       body: Stack(
         children: [
           // 1. Tampilan Kamera Full Screen (Background)
@@ -200,7 +205,6 @@ class _DetectorScreenState extends State<DetectorScreen> {
           SafeArea(
             child: Column(
               children: [
-                _buildTopBar(),
                 const Spacer(),
                 _buildBottomControls(),
                 const SizedBox(height: 20),

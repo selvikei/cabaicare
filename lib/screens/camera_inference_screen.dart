@@ -7,6 +7,7 @@ import '../widgets/camera_inference_overlay.dart';
 import '../widgets/camera_logo_overlay.dart';
 import '../widgets/camera_controls.dart';
 import '../widgets/threshold_slider.dart';
+import '../widgets/appbar_widget.dart';
 
 /// A screen that demonstrates real-time YOLO inference using the device camera.
 ///
@@ -68,12 +69,9 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Real-Time YOLO Detection"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,),
+      appBar: const CustomAppBar(
+        title: "Real-Time Deteksi Hama",
+      ),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, child) {
