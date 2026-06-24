@@ -31,41 +31,42 @@ class CameraControls extends StatelessWidget {
 
     return Stack(
       children: [
-        Positioned(
-          bottom: (isLandscape ? 16 : 32) + viewPadding.bottom,
-          right: (isLandscape ? 8 : 16) + (isLandscape ? viewPadding.right : 0),
-          child: Column(
-            children: [
-              if (!isFrontCamera)
-                ControlButton.text(
-                  label: '${currentZoomLevel.toStringAsFixed(1)}x',
-                  onPressed: () => onZoomChanged(
-                    currentZoomLevel < 0.75
-                        ? 1.0
-                        : currentZoomLevel < 2.0
-                        ? 3.0
-                        : 0.5,
-                  ),
-                ),
-              SizedBox(height: isLandscape ? 8 : 12),
-              ControlButton.icon(
-                icon: Icons.layers,
-                onPressed: () => onSliderToggled(SliderType.numItems),
-              ),
-              SizedBox(height: isLandscape ? 8 : 12),
-              ControlButton.icon(
-                icon: Icons.adjust,
-                onPressed: () => onSliderToggled(SliderType.confidence),
-              ),
-              SizedBox(height: isLandscape ? 8 : 12),
-              ControlButton.icon(
-                icon: Icons.tune,
-                onPressed: () => onSliderToggled(SliderType.iou),
-              ),
-              SizedBox(height: isLandscape ? 16 : 40),
-            ],
-          ),
-        ),
+        //  INI ICON UNTUK ZOOM, SLIDER, DAN FLIP CAMERA
+        // Positioned(
+        //   bottom: (isLandscape ? 16 : 32) + viewPadding.bottom,
+        //   right: (isLandscape ? 8 : 16) + (isLandscape ? viewPadding.right : 0),
+        //   child: Column(
+        //     children: [
+        //       if (!isFrontCamera)
+        //         ControlButton.text(
+        //           label: '${currentZoomLevel.toStringAsFixed(1)}x',
+        //           onPressed: () => onZoomChanged(
+        //             currentZoomLevel < 0.75
+        //                 ? 1.0
+        //                 : currentZoomLevel < 2.0
+        //                 ? 3.0
+        //                 : 0.5,
+        //           ),
+        //         ),
+        //       SizedBox(height: isLandscape ? 8 : 12),
+        //       ControlButton.icon(
+        //         icon: Icons.layers,
+        //         onPressed: () => onSliderToggled(SliderType.numItems),
+        //       ),
+        //       SizedBox(height: isLandscape ? 8 : 12),
+        //       ControlButton.icon(
+        //         icon: Icons.adjust,
+        //         onPressed: () => onSliderToggled(SliderType.confidence),
+        //       ),
+        //       SizedBox(height: isLandscape ? 8 : 12),
+        //       ControlButton.icon(
+        //         icon: Icons.tune,
+        //         onPressed: () => onSliderToggled(SliderType.iou),
+        //       ),
+        //       SizedBox(height: isLandscape ? 16 : 40),
+        //     ],
+        //   ),
+        // ),
 
         Positioned(
           bottom:

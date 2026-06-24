@@ -14,8 +14,8 @@ class CameraInferenceController extends ChangeNotifier {
   int _frameCount = 0;
   DateTime _lastFpsUpdate = DateTime.now();
 
-  double _confidenceThreshold = 0.25;
-  double _iouThreshold = 0.7;
+  double _confidenceThreshold = 0.45;
+  double _iouThreshold = 0.45;
   int _numItemsThreshold = 30;
   SliderType _activeSlider = SliderType.none;
 
