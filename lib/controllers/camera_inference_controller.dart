@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ultralytics_yolo/widgets/yolo_controller.dart';
 import 'package:ultralytics_yolo/yolo.dart';
 import 'package:ultralytics_yolo/yolo_view.dart';
+import 'package:ultralytics_yolo/yolo_streaming_config.dart';
+
 
 enum SliderType { none, numItems, confidence, iou }
 
@@ -61,6 +63,7 @@ class CameraInferenceController extends ChangeNotifier {
       iouThreshold: _iouThreshold,
       numItemsThreshold: _numItemsThreshold,
     );
+
     _selectedModel = "assets/models/yolov8n_train5.tflite"; 
     notifyListeners();
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/appbar_widget.dart';
+import '../data/manual_data.dart';
 
 class ManualScreen extends StatefulWidget {
   const ManualScreen({super.key});
@@ -12,52 +13,6 @@ class _ManualScreenState extends State<ManualScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
-  // Data struktur untuk menampung isi konten panduan manual
-  final List<Map<String, dynamic>> _manualData = [
-    {
-      "id": 1,
-      "title": "Deteksi di Sini (Jepret/Upload Gambar)",
-      "icon": Icons.camera_alt_rounded,
-      "hasImage": true, // Menandakan fitur ini butuh ilustrasi gambar
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-      "id": 2,
-      "title": "Fitur Deteksi Real-Time",
-      "icon": Icons.videocam_rounded,
-      "hasImage": false,
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pemicu aliran kamera langsung akan menganalisis frame daun cabai secara instan menggunakan model YOLOv8n untuk mendeteksi pergerakan hama tanpa jeda jepretan."
-    },
-    {
-      "id": 3,
-      "title": "Fitur Informasi Cabai",
-      "icon": Icons.info_rounded,
-      "hasImage": false,
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Menyediakan edukasi dasar seputar varietas tanaman cabai, teknik penanaman yang baik, serta tips perawatan agrikultur harian."
-    },
-    {
-      "id": 4,
-      "title": "Fitur Informasi Hama Cabai",
-      "icon": Icons.bug_report_rounded,
-      "hasImage": false,
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Berisi ensiklopedia mini mengenai jenis-jenis hama cabai (seperti kutu daun, ulat, thrips) beserta gejala klinis dan metode penanggulangannya."
-    },
-    {
-      "id": 5,
-      "title": "Fitur Riwayat",
-      "icon": Icons.history_rounded,
-      "hasImage": false,
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Menyimpan berkas digital hasil scan hama sebelumnya ke dalam database lokal Sqflite lengkap dengan waktu, gambar, dan tingkat akurasi presisi."
-    },
-    {
-      "id": 6,
-      "title": "Fitur Rating (Coming Soon)",
-      "icon": Icons.star_rate_rounded,
-      "hasImage": false,
-      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fitur masa depan yang memungkinkan para petani memberikan penilaian umpan balik terhadap akurasi model deteksi guna pengembangan sistem berkala."
-    },
-  ];
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -66,12 +21,21 @@ class _ManualScreenState extends State<ManualScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Logika pemfilteran menu berdasarkan kata kunci pencarian
-    final filteredManual = _manualData.where((item) {
+    // Logika pencarian fleksibel yang menyisir judul maupun teks konten di dalam array steps
+    // Mengambil data dari ManualData.data secara langsung
+    final filteredManual = ManualData.data.where((item) {
       final titleLower = item['title'].toString().toLowerCase();
-      final contentLower = item['content'].toString().toLowerCase();
       final searchLower = _searchQuery.toLowerCase();
-      return titleLower.contains(searchLower) || contentLower.contains(searchLower);
+
+      bool matchesContent = false;
+      for (var step in (item['steps'] as List)) {
+        if (step['content'] != null &&
+            step['content'].toString().toLowerCase().contains(searchLower)) {
+          matchesContent = true;
+          break;
+        }
+      }
+      return titleLower.contains(searchLower) || matchesContent;
     }).toList();
 
     return Scaffold(
@@ -81,9 +45,7 @@ class _ManualScreenState extends State<ManualScreen> {
       ),
       body: Column(
         children: [
-          // ========================================================
-          // KANVAS PENCARIAN (SEARCH BAR KEYWORD)
-          // ========================================================
+          // 1. Bilah Pencarian Panduan Fitur
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: TextField(
@@ -118,9 +80,7 @@ class _ManualScreenState extends State<ManualScreen> {
             ),
           ),
 
-          // ========================================================
-          // LIST EXPANSION TILE (BUKA TUTUP MANUAL)
-          // ========================================================
+          // 2. Konten Akordeon Komponen Daftar Manual (ExpansionTile)
           Expanded(
             child: filteredManual.isEmpty
                 ? const Center(
@@ -130,7 +90,8 @@ class _ManualScreenState extends State<ManualScreen> {
                     ),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     itemCount: filteredManual.length,
                     itemBuilder: (context, index) {
                       final item = filteredManual[index];
@@ -142,10 +103,11 @@ class _ManualScreenState extends State<ManualScreen> {
                           border: Border.all(color: const Color(0xFFE0EBEB)),
                         ),
                         child: Theme(
-                          // Menghilangkan garis pembatas bawaan expansion tile saat terbuka
-                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
-                            leading: Icon(item['icon'], color: const Color(0xFF2E5959)),
+                            leading: Icon(item['icon'],
+                                color: const Color(0xFF2E5959)),
                             title: Text(
                               item['title'],
                               style: const TextStyle(
@@ -155,38 +117,141 @@ class _ManualScreenState extends State<ManualScreen> {
                                 fontSize: 14,
                               ),
                             ),
-                            // Desain tanda panah otomatis berubah arah jika dibuka/tutup
-                            trailing: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF2E5959)),
+                            trailing: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Color(0xFF2E5959)),
                             childrenPadding: const EdgeInsets.all(16),
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Kondisional jika item ID 1 membutuhkan render gambar rata kiri
-                                  if (item['hasImage'] == true) ...[
-                                    Container(
-                                      width: 120,
-                                      height: 120,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(8),
+                                children:
+                                    (item['steps'] as List).map<Widget>((step) {
+                                  // RENDER TYPE 1: PARAGRAF DESKRIPSI BIASA
+                                  if (step['type'] == 'text') {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: Text(
+                                        step['content'],
+                                        style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 13,
+                                            color: Colors.black87,
+                                            height: 1.5),
+                                        textAlign: TextAlign.justify,
                                       ),
-                                      child: const Icon(Icons.image, size: 40, color: Colors.grey), // Ganti Image.asset nanti
-                                    ),
-                                    const SizedBox(height: 12),
-                                  ],
-                                  // Teks Deskripsi Lorem Ipsum di bawah gambar
-                                  Text(
-                                    item['content'],
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 13,
-                                      color: Colors.black87,
-                                      height: 1.5,
-                                    ),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                ],
+                                    );
+                                  }
+
+                                  // RENDER TYPE 2: ELEMEN GAMBAR / SCREENSHOT
+                                  else if (step['type'] == 'image') {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, bottom: 14.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.asset(
+                                          step['imagePath'],
+                                          width: double.infinity,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            // Fallback widget jika file aset gambar belum diletakkan di folder assets
+                                            return Container(
+                                              width: double.infinity,
+                                              height: 150,
+                                              color: Colors.grey[300],
+                                              child: const Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.image,
+                                                      size: 40,
+                                                      color: Colors.grey),
+                                                  SizedBox(height: 6),
+                                                  Text("Ilustrasi Alur Panduan",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey)),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  // RENDER TYPE 3: URUTAN DATA BERANGKA (NUMBERING)
+                                  else if (step['type'] == 'number') {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 24,
+                                            child: Text(
+                                              step['number'],
+                                              style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF2E5959)),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              step['content'],
+                                              style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 13,
+                                                  color: Colors.black87,
+                                                  height: 1.5),
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+
+                                  // RENDER TYPE 4: POIN BULAT (BULLET POINTS)
+                                  else if (step['type'] == 'bullet') {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            "•  ",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF2E5959)),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              step['content'],
+                                              style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 13,
+                                                  color: Colors.black87,
+                                                  height: 1.5),
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                }).toList(),
                               ),
                             ],
                           ),
@@ -195,38 +260,6 @@ class _ManualScreenState extends State<ManualScreen> {
                     },
                   ),
           ),
-
-          // ========================================================
-          // FORMAL ACADEMIC COPYRIGHT BOTTOM SECTION
-          // ========================================================
-          // Container(
-          //   width: double.infinity,
-          //   padding: const EdgeInsets.symmetric(vertical: 16),
-          //   color: const Color(0xFF2E5959),
-          //   child: Column(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       const Text(
-          //         "© 2026 Selvi - Politeknik Elektronika Negeri Surabaya",
-          //         style: TextStyle(
-          //           fontFamily: 'Inter',
-          //           color: Colors.white70,
-          //           fontSize: 11,
-          //           fontWeight: FontWeight.w500,
-          //         ),
-          //       ),
-          //       const SizedBox(height: 2),
-          //       Text(
-          //         "CabaiCare Team • PENS",
-          //         style: TextStyle(
-          //           fontFamily: 'Inter',
-          //           color: Colors.white.withValues(alpha: 0.4),
-          //           fontSize: 9,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
