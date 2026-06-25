@@ -6,7 +6,6 @@ import 'package:ultralytics_yolo/yolo.dart';
 import 'package:ultralytics_yolo/yolo_view.dart';
 import 'package:ultralytics_yolo/yolo_streaming_config.dart';
 
-
 enum SliderType { none, numItems, confidence, iou }
 
 /// Controller that manages the state and business logic for camera inference.
@@ -30,6 +29,9 @@ class CameraInferenceController extends ChangeNotifier {
 
   final _yoloController = YOLOViewController();
   bool _isDisposed = false;
+
+  List<YOLOResult> _currentResults = [];
+  List<YOLOResult> get currentResults => _currentResults;
 
   int get detectionCount => _detectionCount;
   double get currentFps => _currentFps;
@@ -64,12 +66,15 @@ class CameraInferenceController extends ChangeNotifier {
       numItemsThreshold: _numItemsThreshold,
     );
 
-    _selectedModel = "assets/models/yolov8n_train5.tflite"; 
+    _selectedModel = "assets/models/yolov8n_train5.tflite";
     notifyListeners();
   }
 
   void onDetectionResults(List<YOLOResult> results) {
     if (_isDisposed) return;
+
+    // 💡 SIMPAN HASIL DETEKSI TERBARU KEDALAM VARIABEL
+    _currentResults = results;
 
     _frameCount++;
     final now = DateTime.now();
@@ -79,13 +84,11 @@ class CameraInferenceController extends ChangeNotifier {
       _currentFps = _frameCount * 1000 / elapsed;
       _frameCount = 0;
       _lastFpsUpdate = now;
-      notifyListeners();
     }
 
-    if (_detectionCount != results.length) {
-      _detectionCount = results.length;
-      notifyListeners();
-    }
+    // notifyListeners wajib dipanggil agar UI tergambar ulang setiap ada hama baru
+    _detectionCount = results.length;
+    notifyListeners();
   }
 
   void onPerformanceMetrics(double fps) {

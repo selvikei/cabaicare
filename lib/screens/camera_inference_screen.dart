@@ -9,14 +9,7 @@ import '../widgets/camera_controls.dart';
 import '../widgets/threshold_slider.dart';
 import '../widgets/appbar_widget.dart';
 
-/// A screen that demonstrates real-time YOLO inference using the device camera.
-///
-/// This screen provides:
-/// - Live camera feed with YOLO object detection
-/// - Model selection (detect, segment, classify, pose, obb)
-/// - Adjustable thresholds (confidence, IoU, max detections)
-/// - Camera controls (flip, zoom)
-/// - Performance metrics (FPS)
+
 class CameraInferenceScreen extends StatefulWidget {
   const CameraInferenceScreen({super.key});
 
@@ -42,11 +35,8 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Check if route is current (we've navigated back to this screen)
     final route = ModalRoute.of(context);
     if (route?.isCurrent == true) {
-      // Force rebuild when navigating back to ensure camera restarts
-      // The rebuild will create a new YOLOView which will automatically start the camera
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           setState(() {
@@ -69,6 +59,7 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
+      backgroundColor: Colors.black, // Memastikan kontras video kamera bagus
       appBar: const CustomAppBar(
         title: "Real-Time Deteksi Hama",
       ),
@@ -77,15 +68,134 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
         builder: (context, child) {
           return Stack(
             children: [
-              CameraInferenceContent(
-                key: ValueKey('camera_content_$_rebuildKey'),
-                controller: _controller,
-                rebuildKey: _rebuildKey,
+              // --------------------------------------------------------
+              // Lapisan 1 & 2: Kamera dan Bounding Box di dalam satu basis ukuran
+              // --------------------------------------------------------
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Mengambil ukuran presisi area konten yang tersedia
+                  final maxWidth = constraints.maxWidth;
+                  final maxHeight = constraints.maxHeight;
+
+                  return SizedBox(
+                    width: maxWidth,
+                    height: maxHeight,
+                    child: Stack(
+                      children: [
+                        // Feed Kamera dasar dari YOLOView
+                        CameraInferenceContent(
+                          key: ValueKey('camera_content_$_rebuildKey'),
+                          controller: _controller,
+                          rebuildKey: _rebuildKey,
+                        ),
+
+                        // Bounding Box Kustom Manual
+                        ..._controller.currentResults.map((result) {
+                          // ✅ Gunakan normalizedBox (0.0–1.0) agar presisi
+                          // di semua resolusi kamera dan ukuran layar
+                          final norm = result.normalizedBox;
+
+                          // Inisiasi warna manual berdasarkan nama kelas target
+                          Color boxColor;
+                          switch (result.className.toLowerCase()) {
+                            case 'kutu daun':
+                            case 'aphids':
+                              boxColor = Colors.purple; // Kutu Daun -> Ungu
+                              break;
+                            case 'kutu kebul':
+                            case 'bemisia tabaci':
+                              boxColor = Colors.red; // Kutu Kebul -> Merah
+                              break;
+                            case 'thrips':
+                            case 'thrips parvispinus':
+                              boxColor = Colors.blue; // Thrips -> Biru
+                              break;
+                            default:
+                              boxColor =
+                                  const Color(0xFFFFD700); // Default Kuning
+                          }
+
+                          // UKURAN KOTAK TETAP (ubah nilai ini sesuai selera)
+                          const double fixedSize = 22.0;
+
+                          // Tengahkan kotak terhadap pusat objek yang terdeteksi
+                          final double centerX =
+                              (norm.left + norm.width / 2) * maxWidth;
+                          final double centerY =
+                              (norm.top + norm.height / 2) * maxHeight;
+
+                          final double left = centerX - fixedSize / 2;
+                          final double top = centerY - fixedSize / 2;
+                          const double width = fixedSize;
+                          const double height = fixedSize;
+
+                          return Positioned(
+                            left: left,
+                            top: top,
+                            width: width,
+                            height: height,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                // Bingkai kotak kustom hama
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: boxColor,
+                                      width: 3.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: boxColor.withOpacity(0.12),
+                                  ),
+                                ),
+
+                                // Label Teks Nama Hama + Persentase Confidence
+                                Positioned(
+                                  top:
+                                      -20, // Mengambang pas di atas garis kotak kustom
+                                  left: -3,
+                                  child: Container(
+                                    // 💡 PERBAIKAN: Menghapus properti 'color:' luar yang bikin crash,
+                                    // sekarang murni dibungkus di dalam BoxDecoration.
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: boxColor,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(3),
+                                        topRight: Radius.circular(3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "${result.className.toUpperCase()} ${(result.confidence * 100).toStringAsFixed(0)}%",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  );
+                },
               ),
+
+              // --------------------------------------------------------
+              // Lapisan UI Kontrol & Metrik (Tetap berada di Stack teratas layar)
+              // --------------------------------------------------------
               CameraInferenceOverlay(
                 controller: _controller,
                 isLandscape: isLandscape,
               ),
+
               CameraControls(
                 currentZoomLevel: _controller.currentZoomLevel,
                 isFrontCamera: _controller.isFrontCamera,
@@ -95,6 +205,7 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
                 onCameraFlipped: _controller.flipCamera,
                 isLandscape: isLandscape,
               ),
+
               ThresholdSlider(
                 activeSlider: _controller.activeSlider,
                 confidenceThreshold: _controller.confidenceThreshold,
@@ -111,16 +222,16 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
   }
 
   void _showError(String title, String message) => showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }

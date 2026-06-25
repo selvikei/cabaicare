@@ -154,7 +154,7 @@ class _ManualScreenState extends State<ManualScreen> {
                                           step['imagePath'],
                                           width: double.infinity,
                                           height: 200,
-                                          fit: BoxFit.cover,
+                                          fit: BoxFit.contain,
                                           errorBuilder:
                                               (context, error, stackTrace) {
                                             // Fallback widget jika file aset gambar belum diletakkan di folder assets
@@ -253,9 +253,11 @@ class _ManualScreenState extends State<ManualScreen> {
                                   return const SizedBox.shrink();
                                 }).toList(),
                               ),
+                              
                             ],
                           ),
                         ),
+                        
                       );
                     },
                   ),

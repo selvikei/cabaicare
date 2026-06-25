@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import '../data/database_helper.dart';
 import '../models/history_mode.dart';
+import '../widgets/appbar_widget.dart';
 
 class ResultScreen extends StatelessWidget {
   final String imagePath;
@@ -50,19 +51,23 @@ class ResultScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF8),
-      appBar: AppBar(
-        title: const Text(
-          "Hasil Deteksi",
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+      appBar: CustomAppBar(
+        title: "Hasil Deteksi",
       ),
+
+      // appBar: AppBar(
+      //   title: const Text(
+      //     "Hasil Deteksi",
+      //     style: TextStyle(
+      //       fontFamily: 'PlusJakartaSans',
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   backgroundColor: Colors.white,
+      //   foregroundColor: Colors.black,
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [

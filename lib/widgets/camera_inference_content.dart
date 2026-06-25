@@ -1,3 +1,4 @@
+// camera_inference_content.dart
 // Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
 
 import 'package:flutter/material.dart';
@@ -26,12 +27,15 @@ class CameraInferenceContent extends StatelessWidget {
         controller: controller.yoloController,
         modelPath: controller.modelPath,
         task: controller.selectedTask,
-        streamingConfig: const YOLOStreamingConfig.minimal(),
+        // 💡 PERBAIKAN: Matikan gambar bounding box bawaan agar tidak double
+        streamingConfig: const YOLOStreamingConfig.minimal(
+        ),
         onResult: controller.onDetectionResults,
         onPerformanceMetrics: (metrics) =>
             controller.onPerformanceMetrics(metrics.fps),
         onZoomChanged: controller.onZoomChanged,
         lensFacing: controller.lensFacing,
+        showOverlays: false, // Matikan overlay bawaan untuk menghindari tumpang tindih
       );
     } else {
       return const Center(

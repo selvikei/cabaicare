@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import '../models/history_mode.dart';
 import '../data/database_helper.dart';
+import '../widgets/appbar_widget.dart';
 
 class HistoryDetailScreen extends StatelessWidget {
   final HistoryModel history;
@@ -70,17 +71,13 @@ class HistoryDetailScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF8),
-      appBar: AppBar(
-        title: const Text("Detail Riwayat"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        // ikon delete history
+      appBar: CustomAppBar(
+        title: "Detail Riwayat",
         actions: [
+          // Tombol hapus tetap diletakkan di sisi kanan dengan warna putih agar kontras
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
             onPressed: () => _confirmDelete(context),
+            icon: const Icon(Icons.delete_outline, color: Colors.white),
           ),
         ],
       ),
