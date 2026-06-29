@@ -39,10 +39,9 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#E9EFEF" # Warna hijau gelap khas CabaiCare sebagai background
-  image: "assets/images/cabaicare.png" # Logo CabaiCare di tengah layar
+
   android_12:
-    color: "#E9EFEF" # Warna hijau gelap khas CabaiCare sebagai background untuk Android 12
-    image: "assets/images/cabaicare.png"
+    color: "#E9EFEF" #  PENTING: Ini yang akan menghilangkan layar hitam di HP Infinix-mu!
 
   android: true
   ios: false
@@ -86,7 +85,6 @@ flutter:
           weight: 500
 
   assets:
-    - assets/models/yolov8n_train5.tflite
-    - assets/models/labels.txt
+    - assets/models/
     - assets/images/
     - assets/icons/

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import '../data/database_helper.dart';
 import '../models/history_mode.dart';
+import '../widgets/appbar_widget.dart';
 
 class ResultScreen extends StatelessWidget {
   final String imagePath;
@@ -50,19 +51,23 @@ class ResultScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF8),
-      appBar: AppBar(
-        title: const Text(
-          "Hasil Deteksi",
-          style: TextStyle(
-            fontFamily: 'PlusJakartaSans',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+      appBar: CustomAppBar(
+        title: "Hasil Deteksi",
       ),
+
+      // appBar: AppBar(
+      //   title: const Text(
+      //     "Hasil Deteksi",
+      //     style: TextStyle(
+      //       fontFamily: 'PlusJakartaSans',
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   backgroundColor: Colors.white,
+      //   foregroundColor: Colors.black,
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -94,21 +99,41 @@ class ResultScreen extends StatelessWidget {
                       ),
                       ...detections
                           .map(
-                            (det) => Positioned(
-                              left: det['x'] * displaySize,
-                              top: det['y'] * displaySize,
-                              child: Container(
-                                width: det['w'] * displaySize,
-                                height: det['h'] * displaySize,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: _getBoxColor(det['label']),
-                                    width: 2.5,
+                            (det) {
+                              // Padding 50% lebih besar dari ukuran objek asli
+                              const double paddingMultiplier = 2.5;
+
+                              // Ukuran asli dari model YOLO (normalized 0-1 terhadap 640x640)
+                              final double origW = det['w'] * displaySize;
+                              final double origH = det['h'] * displaySize;
+
+                              // Ukuran baru yang diperbesar
+                              final double newW = origW * paddingMultiplier;
+                              final double newH = origH * paddingMultiplier;
+
+                              // Hitung pusat objek, lalu geser posisi agar tetap terpusat
+                              final double centerX = (det['x'] + det['w'] / 2) * displaySize;
+                              final double centerY = (det['y'] + det['h'] / 2) * displaySize;
+
+                              final double newLeft = centerX - newW / 2;
+                              final double newTop = centerY - newH / 2;
+
+                              return Positioned(
+                                left: newLeft,
+                                top: newTop,
+                                child: Container(
+                                  width: newW,
+                                  height: newH,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: _getBoxColor(det['label']),
+                                      width: 2.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
-                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           )
                           .toList(),
                     ],

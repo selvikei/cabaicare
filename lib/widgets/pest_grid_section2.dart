@@ -50,6 +50,7 @@ class PestGridSection extends StatelessWidget {
               description: pest.description,
               imagePath: pest.imagePath,
               sources: pest.sources,
+              pesticides: pest.pesticides,
             ),
           ),
         );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 import '../models/history_mode.dart';
 import '../widgets/history_item_card.dart';
+import '../widgets/appbar_widget.dart';
 
 class HistoryListScreen extends StatefulWidget {
   const HistoryListScreen({super.key});
@@ -50,27 +51,13 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          "Semua Riwayat",
-          style: TextStyle(
-            color: Color(0xFF2E5959),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            fontFamily: 'PlusJakartaSans',
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2E5959)),
-          onPressed: () => Navigator.pop(context),
-        ),
+     appBar: CustomAppBar(
+        title: "Semua Riwayat",
         actions: [
-          // Tombol Hapus Semua (Opsional)
+          // Tombol hapus tetap diletakkan di sisi kanan dengan warna putih agar kontras
           IconButton(
             onPressed: _clearAllHistory,
-            icon: const Icon(Icons.delete_sweep_rounded, color: Colors.redAccent),
+            icon: const Icon(Icons.delete_sweep_rounded, color: Colors.white),
           ),
         ],
       ),
@@ -103,7 +90,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           final allHistory = snapshot.data!.toList();
 
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             itemCount: allHistory.length,
             itemBuilder: (context, index) {
               final item = allHistory[index];

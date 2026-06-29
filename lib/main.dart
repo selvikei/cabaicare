@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:cabai_care/screens/home_page.dart'; // Pastikan path ini benar
-import 'package:cabai_care/services/tflite_service.dart'; // Import TfliteService untuk digunakan di DetectorScreen
+import '../screens/home_page.dart'; 
+import '../services/tflite_service.dart'; // Import TfliteService untuk digunakan di DetectorScreen
+import '../screens/splash_screen.dart'; // Import CustomSplashScreen
 
 // 1. Variabel global untuk menampung daftar kamera HP
 List<CameraDescription> cameras = [];
@@ -39,8 +40,8 @@ class RobopestApp extends StatelessWidget {
         useMaterial3: true,
         primaryColor: const Color(0xFF2E5959),
       ),
-      // 5. Langsung arahkan ke HomePage
-      home: const HomePage(),
+      // 5. Langsung arahkan ke CustomSplashScreen
+      home: const CustomSplashScreen(),
     );
   }
 }
