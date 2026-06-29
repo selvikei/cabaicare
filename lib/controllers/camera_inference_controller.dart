@@ -75,7 +75,7 @@ class CameraInferenceController extends ChangeNotifier {
       numItemsThreshold: _numItemsThreshold,
     );
 
-    _selectedModel = "assets/models/yolov8l_train5.tflite";
+    _selectedModel = "assets/models/yolov8n_train5.tflite";
     // ignore: avoid_print
     print('══════════════════════════════════════════════════════════');
     // ignore: avoid_print
@@ -167,7 +167,7 @@ class CameraInferenceController extends ChangeNotifier {
     );
     // ignore: avoid_print
     print(
-      '[BENCHMARK - YOLOv8l] '
+      '[BENCHMARK - YOLOv8n] '
       'Inference: ${avgInference.toStringAsFixed(1)} ms | '
       'Total Process: ${avgTotalFrame.toStringAsFixed(1)} ms | '
       'FPS: ${avgFps.toStringAsFixed(1)} '
