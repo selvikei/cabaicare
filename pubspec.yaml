@@ -85,7 +85,6 @@ flutter:
           weight: 500
 
   assets:
-    - assets/models/yolov8n_train5.tflite
-    - assets/models/labels.txt
+    - assets/models/
     - assets/images/
     - assets/icons/

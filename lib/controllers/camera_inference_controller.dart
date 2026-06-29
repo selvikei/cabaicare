@@ -5,6 +5,7 @@ import 'package:ultralytics_yolo/widgets/yolo_controller.dart';
 import 'package:ultralytics_yolo/yolo.dart';
 import 'package:ultralytics_yolo/yolo_view.dart';
 import 'package:ultralytics_yolo/yolo_streaming_config.dart';
+import 'package:ultralytics_yolo/yolo_performance_metrics.dart';
 
 enum SliderType { none, numItems, confidence, iou }
 
@@ -15,7 +16,15 @@ class CameraInferenceController extends ChangeNotifier {
   int _frameCount = 0;
   DateTime _lastFpsUpdate = DateTime.now();
 
-  double _confidenceThreshold = 0.45;
+  // ── BENCHMARK: Variabel untuk pencatatan performa ──
+  final Stopwatch _frameStopwatch = Stopwatch();
+  final List<double> _inferenceTimeSamples = [];
+  final List<double> _totalFrameTimeSamples = [];
+  DateTime _lastBenchmarkPrint = DateTime.now();
+  double _lastInferenceTimeMs = 0.0;
+  int _benchmarkFrameCount = 0;
+
+  double _confidenceThreshold = 0.55;
   double _iouThreshold = 0.45;
   int _numItemsThreshold = 30;
   SliderType _activeSlider = SliderType.none;
@@ -66,17 +75,36 @@ class CameraInferenceController extends ChangeNotifier {
       numItemsThreshold: _numItemsThreshold,
     );
 
-    _selectedModel = "assets/models/yolov8n_train5.tflite";
+    _selectedModel = "assets/models/yolov8l_train5.tflite";
+    // ignore: avoid_print
+    print('══════════════════════════════════════════════════════════');
+    // ignore: avoid_print
+    print('[BENCHMARK] Sistem benchmark AKTIF - Model: $_selectedModel');
+    // ignore: avoid_print
+    print('[BENCHMARK] Rata-rata akan dicetak setiap 5 detik.');
+    // ignore: avoid_print
+    print('══════════════════════════════════════════════════════════');
     notifyListeners();
   }
 
   void onDetectionResults(List<YOLOResult> results) {
     if (_isDisposed) return;
 
+    // ── BENCHMARK: Ukur Total Frame Time dengan Stopwatch ──
+    double totalFrameTimeMs = 0.0;
+    if (_frameStopwatch.isRunning) {
+      _frameStopwatch.stop();
+      totalFrameTimeMs =
+          _frameStopwatch.elapsedMicroseconds / 1000.0; // presisi sub-ms
+    }
+    _frameStopwatch.reset();
+    _frameStopwatch.start();
+
     // 💡 SIMPAN HASIL DETEKSI TERBARU KEDALAM VARIABEL
     _currentResults = results;
 
     _frameCount++;
+    _benchmarkFrameCount++;
     final now = DateTime.now();
     final elapsed = now.difference(_lastFpsUpdate).inMilliseconds;
 
@@ -86,17 +114,73 @@ class CameraInferenceController extends ChangeNotifier {
       _lastFpsUpdate = now;
     }
 
+    // ── BENCHMARK: Kumpulkan sampel ──
+    if (totalFrameTimeMs > 0) {
+      _inferenceTimeSamples.add(_lastInferenceTimeMs);
+      _totalFrameTimeSamples.add(totalFrameTimeMs);
+    }
+
+    // ── BENCHMARK: Cetak rata-rata setiap 5 detik ──
+    final benchmarkElapsed =
+        now.difference(_lastBenchmarkPrint).inMilliseconds;
+    if (benchmarkElapsed >= 5000 && _totalFrameTimeSamples.isNotEmpty) {
+      _printBenchmarkAverage();
+      _lastBenchmarkPrint = now;
+    }
+
     // notifyListeners wajib dipanggil agar UI tergambar ulang setiap ada hama baru
     _detectionCount = results.length;
     notifyListeners();
   }
 
-  void onPerformanceMetrics(double fps) {
+  void onPerformanceMetrics(YOLOPerformanceMetrics metrics) {
     if (_isDisposed) return;
+
+    // ── BENCHMARK: Simpan inference time dari native engine ──
+    _lastInferenceTimeMs = metrics.processingTimeMs;
+
+    final fps = metrics.fps;
     if ((_currentFps - fps).abs() > 0.1) {
       _currentFps = fps;
       notifyListeners();
     }
+  }
+
+  /// Mencetak rata-rata benchmark ke konsol dalam format rapi.
+  void _printBenchmarkAverage() {
+    if (_inferenceTimeSamples.isEmpty || _totalFrameTimeSamples.isEmpty) return;
+
+    final int sampleCount = _totalFrameTimeSamples.length;
+
+    final double avgInference =
+        _inferenceTimeSamples.reduce((a, b) => a + b) /
+            _inferenceTimeSamples.length;
+    final double avgTotalFrame =
+        _totalFrameTimeSamples.reduce((a, b) => a + b) /
+            _totalFrameTimeSamples.length;
+    final double avgFps =
+        avgTotalFrame > 0 ? 1000.0 / avgTotalFrame : 0.0;
+
+    // ignore: avoid_print
+    print(
+      '\n──────────────────────────────────────────────────────────',
+    );
+    // ignore: avoid_print
+    print(
+      '[BENCHMARK - YOLOv8l] '
+      'Inference: ${avgInference.toStringAsFixed(1)} ms | '
+      'Total Process: ${avgTotalFrame.toStringAsFixed(1)} ms | '
+      'FPS: ${avgFps.toStringAsFixed(1)} '
+      '(avg dari $sampleCount frame)',
+    );
+    // ignore: avoid_print
+    print(
+      '──────────────────────────────────────────────────────────\n',
+    );
+
+    // Reset sampel untuk periode berikutnya
+    _inferenceTimeSamples.clear();
+    _totalFrameTimeSamples.clear();
   }
 
   void onZoomChanged(double zoomLevel) {

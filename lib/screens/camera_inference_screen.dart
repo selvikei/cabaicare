@@ -115,8 +115,18 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
                                   const Color(0xFFFFD700); // Default Kuning
                           }
 
-                          // UKURAN KOTAK TETAP (ubah nilai ini sesuai selera)
-                          const double fixedSize = 22.0;
+                          // UKURAN KOTAK DINAMIS: menyesuaikan ukuran objek
+                          // dari model YOLO, dengan padding agar sedikit lebih besar
+                          const double paddingMultiplier = 1.5; // 20% lebih besar dari objek
+                          const double minBoxSize = 20.0; // Ukuran minimum agar tetap terlihat
+
+                          // Hitung ukuran berdasarkan normalizedBox dari YOLO
+                          final double rawWidth = norm.width * maxWidth * paddingMultiplier;
+                          final double rawHeight = norm.height * maxHeight * paddingMultiplier;
+
+                          // Pastikan ukuran minimal agar objek sangat kecil tetap terlihat
+                          final double width = rawWidth < minBoxSize ? minBoxSize : rawWidth;
+                          final double height = rawHeight < minBoxSize ? minBoxSize : rawHeight;
 
                           // Tengahkan kotak terhadap pusat objek yang terdeteksi
                           final double centerX =
@@ -124,10 +134,8 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
                           final double centerY =
                               (norm.top + norm.height / 2) * maxHeight;
 
-                          final double left = centerX - fixedSize / 2;
-                          final double top = centerY - fixedSize / 2;
-                          const double width = fixedSize;
-                          const double height = fixedSize;
+                          final double left = centerX - width / 2;
+                          final double top = centerY - height / 2;
 
                           return Positioned(
                             left: left,
