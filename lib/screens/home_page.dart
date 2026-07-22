@@ -8,7 +8,7 @@ import '../widgets/history_item_card.dart';
 import '../screens/detector_screen.dart';
 import '../screens/history_list_screen.dart';
 import '../data/database_helper.dart';
-import '../models/history_mode.dart';
+import '../models/history_model.dart';
 import '../screens/camera_inference_screen.dart';
 import '../widgets/appbar_widget.dart';
 import '../screens/manual_screen.dart';

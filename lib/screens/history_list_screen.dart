@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
-import '../models/history_mode.dart';
+import '../models/history_model.dart';
 import '../widgets/history_item_card.dart';
 import '../widgets/appbar_widget.dart';
 

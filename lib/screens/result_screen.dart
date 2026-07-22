@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../data/database_helper.dart';
-import '../models/history_mode.dart';
+import '../models/history_model.dart';
 import '../widgets/appbar_widget.dart';
 
 class ResultScreen extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import '../models/history_mode.dart'; // Pastikan import model kamu
+import '../models/history_model.dart'; // Pastikan import model kamu
 import '../screens/history_detail_screen.dart'; // Pastikan import screen detail
 
 class HistoryItemCard extends StatelessWidget {

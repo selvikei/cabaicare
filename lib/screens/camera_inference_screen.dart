@@ -61,7 +61,7 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
     return Scaffold(
       backgroundColor: Colors.black, // Memastikan kontras video kamera bagus
       appBar: const CustomAppBar(
-        title: "Real-Time Deteksi Hama",
+        title: "Real-Time Pests Detection",
       ),
       body: ListenableBuilder(
         listenable: _controller,
@@ -95,24 +95,35 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
                           // di semua resolusi kamera dan ukuran layar
                           final norm = result.normalizedBox;
 
-                          // Inisiasi warna manual berdasarkan nama kelas target
-                          Color boxColor;
-                          switch (result.className.toLowerCase()) {
-                            case 'kutu daun':
-                            case 'aphids':
-                              boxColor = Colors.purple; // Kutu Daun -> Ungu
+                          // Mapping nama hama: keyword → {warna, nama tampilan}
+                          // Menggunakan contains() agar fleksibel terhadap
+                          // berbagai format className dari YOLO plugin
+                          const pestMap = {
+                            'kutu daun':  {'color': 'purple', 'display': 'Aphids (Kutu Daun)'},
+                            'aphids':     {'color': 'purple', 'display': 'Aphids (Kutu Daun)'},
+                            'kutu kebul': {'color': 'red',    'display': 'Whitefly (Kutu Kebul)'},
+                            'bemisia':    {'color': 'red',    'display': 'Whitefly (Kutu Kebul)'},
+                            'whitefle':   {'color': 'red',    'display': 'Whitefly (Kutu Kebul)'},
+                            'whitefly':   {'color': 'red',    'display': 'Whitefly (Kutu Kebul)'},
+                            'thrips':     {'color': 'blue',   'display': 'Thrips'},
+                          };
+
+                          const colorLookup = {
+                            'purple': Colors.purple,
+                            'red':    Colors.red,
+                            'blue':   Colors.blue,
+                          };
+
+                          final classNameLower = result.className.toLowerCase();
+                          String displayName = result.className; // fallback
+                          Color boxColor = const Color(0xFFFFD700); // default kuning
+
+                          for (final entry in pestMap.entries) {
+                            if (classNameLower.contains(entry.key)) {
+                              displayName = entry.value['display']!;
+                              boxColor = colorLookup[entry.value['color']]!;
                               break;
-                            case 'kutu kebul':
-                            case 'bemisia tabaci':
-                              boxColor = Colors.red; // Kutu Kebul -> Merah
-                              break;
-                            case 'thrips':
-                            case 'thrips parvispinus':
-                              boxColor = Colors.blue; // Thrips -> Biru
-                              break;
-                            default:
-                              boxColor =
-                                  const Color(0xFFFFD700); // Default Kuning
+                            }
                           }
 
                           // UKURAN KOTAK DINAMIS: menyesuaikan ukuran objek
@@ -177,7 +188,7 @@ class _CameraInferenceScreenState extends State<CameraInferenceScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      "${result.className.toUpperCase()} ${(result.confidence * 100).toStringAsFixed(0)}%",
+                                      "${displayName.toUpperCase()} ${(result.confidence * 100).toStringAsFixed(0)}%",
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 10,
